@@ -36,47 +36,44 @@
 </div>
 
 
-<div class="row m-b-2">
-  <div class="col-md-12">
-    <div>
-      <div id="location_map" style="height: 480px;"></div>
+  <div class="row m-b-2">
+    <div class="col-md-12">
+      <div class="header">
+        <h4 class="title">
+          Places you've bookmarked
+        </h4>
+      </div>
+  <div class="row m-b-2">
+    <div class="col-md-12">
+      <div>
+        <div id="location_map" style="height: 480px;"></div>
+      </div>
+    </div>
+  </div>       
+
+    <% user_venue_list = Bookmark.where({:user_id => current_user.id}) %>
+    <% user_venue_list = user_venue_list.map{|b| b.venue_id} %>
+    <% user_venue_list = user_venue_list.map{|v| Venue.where({ :id => v}).first} %>
+    <% user_venue_list = user_venue_list & @venues %>
+    <% user_venue_list = user_venue_list.sort_by{ |venue| venue.name.downcase } %>
+      
+    <% user_venue_list.each do |venue| %>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <a href="/venues/<%= venue.id %>">
+            <%= venue.name %>
+          </a>
+          
+          <small class="text-muted float-right">
+              <%= venue.neighborhood.name%>, Chicago
+          </small>
+        </li>
+      </ul>
+      <% end %>
+  
     </div>
   </div>
 </div>
-
-<div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped table-hover">
-      <tr>
-        <th>Name</th>
-        <th>Address</th>
-        <th>Neighborhood</th>
-        <th>Actions</th>
-      </tr>
-
-      <% @venues.each do |venue| %>
-      <tr>
-        <td><%= venue.name %></td>
-        <td><%= venue.address %></td>
-        <td>
-          <% if venue.neighborhood.present? %>
-            <a href="/neighborhoods/<%= venue.neighborhood.id %>">
-              <%= venue.neighborhood.name %>
-            </a>
-          <% end %>
-        </td>
-        <td>
-          <a href="/venues/<%= venue.id %>" class="btn btn-primary">Show</a>
-          <a href="/venues/<%= venue.id %>/edit" class="btn btn-warning">Edit</a>
-          <a href="/delete_venue/<%= venue.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
-        </td>
-      </tr>
-      <% end %>
-    </table>
-    <%= paginate @venues, theme: 'twitter-bootstrap-4' %>
-  </div>
-</div>
-
 <script src="//maps.google.com/maps/api/js?v=3.24&key=AIzaSyCOTPWiuvyyo6sKoIBzKA4-1ol-vTOIOlM"></script>
 <script src="//cdn.rawgit.com/mahnunchik/markerclustererplus/master/dist/markerclusterer.min.js"></script>
 <script>
