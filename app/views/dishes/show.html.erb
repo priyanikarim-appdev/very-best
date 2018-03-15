@@ -71,6 +71,7 @@
       
           <% @dish.bookmarks.each do |bookmark| %>
         <li class="list-group-item">
+          <p>
           <a href="/venues/<%= bookmark.venue.id%>">
              <%= bookmark.venue.name %>
           </a>
@@ -88,6 +89,7 @@
             <a href="/delete_bookmark/<%= bookmark.id %>" class="btn btn-danger" rel="nofollow">
               <i class="fa fa-trash-o"></i>
             </a>
+          </p>
           </div>
         </li>
       <% end %>
