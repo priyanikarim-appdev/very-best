@@ -1,44 +1,20 @@
-<div class="page-header">
-  <h3>Venue #<%= @venue.id %></h3>
-</div>
+<div class="container mt-4">
+  <div class="row mt-2 justify-content-md-center">
 
-<div class="row">
-  <div class="col-md-12 mb-2">
-    <dl class="dl-horizontal">
-      <dt>Name</dt>
-      <dd><%= @venue.name %></dd>
-
-      <dt>Address</dt>
-      <dd>
-        <div>
-          <div id="location_map" style="height: 480px;"></div>
-        </div>
-      </dd>
-
-      <dt>Neighborhood</dt>
-      <dd>
-        <% if @venue.neighborhood.present? %>
-          <a href="/neighborhoods/<%= @venue.neighborhood_id %>">
-            <%= @venue.neighborhood.name %>
-          </a>
-        <% end %>
-      </dd>
-
-    </dl>
-
-    <div class="btn-group btn-group-justified">
-      <a href="/venues" class="btn btn-primary">
-        Back
-      </a>
-      <a href="/venues/<%= @venue.id %>/edit" class="btn btn-warning">
-        Edit
-      </a>
-      <a href="/delete_venue/<%= @venue.id %>" class="btn btn-danger" rel="nofollow">
-        Delete
-      </a>
-    </div>
-  </div>
-</div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title"> 
+          <dt><%= @venue.name %></dt>
+          <small class="text-muted">
+               <%= @venue.neighborhood.name %>
+          </small>
+        </h4>
+      </div>
+        
+      <div>
+        <div id="location_map" style="height: 480px;"></div>
+      </div>
 
 <!-- A Venue has many bookmarks -->
 
@@ -46,14 +22,16 @@
   <div class="col-md-12">
     <ul class="list-group">
       <li class="list-group-item list-group-item-info">
-        Bookmarks
+        Dishes you loved here
       </li>
-
-      <% @venue.bookmarks.each do |bookmark| %>
+      
+      <% user_venue_bookmarks = Bookmark.where({:venue_id => @venue.id, :user_id => current_user.id}) %>
+      <% user_venue_bookmarks.each do |bookmark| %>
         <li class="list-group-item">
-          <a href="/bookmarks/<%= bookmark.id %>">
-            <%= bookmark.notes %>
+          <a href="/venues/<%= @venue.id %>">
+            <%= bookmark.dish.name %>
           </a>
+          
           <div class="btn-group btn-group-xs float-right">
             <a href="/bookmarks/<%= bookmark.id %>" class="btn btn-primary">
               <i class="fa fa-search-plus"></i>
@@ -67,75 +45,41 @@
           </div>
         </li>
       <% end %>
-
+  
       <li class="list-group-item">
         <form action="/create_bookmark" method="post">
-      <!-- Hidden input for authenticity token to protect from forgery -->
-      <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-
-      <!-- Label and input for dish_id -->
-      <div class="form-group">
-        <label for="dish_id" class="control-label">
-          Dish
-        </label>
-
-        <%= select_tag(:dish_id, options_from_collection_for_select(Dish.all, :id, :name), :class => "form-control") %>
-      </div>
-
-      <!-- Label and input for venue_id -->
-      <input type="hidden" name="venue_id" value="<%= @venue.id %>">
-
-      <!-- Label and input for user_id -->
-      <input type="hidden" name="user_id" value="<%= current_user.id %>">
-
-      <!-- Label and input for notes -->
-      <div class="form-group">
-        <label for="notes" class="control-label">
-          Notes
-        </label>
-
-        <textarea id="notes" name="notes" placeholder="Notes" class="form-control" rows="3"></textarea>
-      </div>
-
-      <button class="btn btn-block btn-success">
-        Create Bookmark
-      </button>
-    </form>
+        <!-- Hidden input for authenticity token to protect from forgery -->
+        <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+  
+        <!-- Label and input for dish_id -->
+        <div class="form-group">
+          <label for="dish_id" class="control-label">
+            Dish
+          </label>
+  
+          <%= select_tag(:dish_id, options_from_collection_for_select(Dish.all, :id, :name), :class => "form-control") %>
+        </div>
+  
+        <!-- Label and input for venue_id -->
+        <input type="hidden" name="venue_id" value="<%= @venue.id %>">
+  
+        <!-- Label and input for user_id -->
+        <input type="hidden" name="user_id" value="<%= current_user.id %>">
+  
+  
+        <button class="btn btn-primary btn">
+          <i class="fa fa-heart"></i>
+        </button>
+        </form>
+      
+        <small class="float-right text-muted">
+            right now
+        </small>
       </li>
     </ul>
   </div>
 </div>
 
-<!-- A Venue has many fans -->
-
-<div class="row">
-  <div class="col-md-12">
-    <ul class="list-group">
-      <li class="list-group-item list-group-item-info">
-        Fans
-      </li>
-
-      <% @venue.fans.each do |user| %>
-        <li class="list-group-item">
-          <a href="/users/<%= user.id %>">
-            <%= user.username %>
-          </a>
-          <div class="btn-group btn-group-xs float-right">
-            <a href="/users/<%= user.id %>" class="btn btn-primary">
-              <i class="fa fa-search-plus"></i>
-            </a>
-            <a href="/users/<%= user.id %>/edit" class="btn btn-warning">
-              <i class="fa fa-edit"></i>
-            </a>
-            <a href="/delete_user/<%= user.id %>" class="btn btn-danger" rel="nofollow">
-              <i class="fa fa-trash-o"></i>
-            </a>
-          </div>
-        </li>
-      <% end %>
-    </ul>
-  </div>
-</div>
 
 <!-- A Venue has many specialties -->
 
@@ -143,7 +87,7 @@
   <div class="col-md-12">
     <ul class="list-group">
       <li class="list-group-item list-group-item-info">
-        Specialties
+        Popular dishes here
       </li>
 
       <% @venue.specialties.each do |dish| %>
