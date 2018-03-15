@@ -36,8 +36,9 @@
   <div class="col-md-12">
     <ul class="list-group">
       <li class="list-group-item list-group-item-info">
-        You loved the dish at...
+        You loved the <%= @dish.name %> at...
       </li>
+
 
       <% @dish.bookmarks.each do |bookmark| %>
         <li class="list-group-item">
@@ -65,6 +66,9 @@
 
       <!-- Label and input for dish_id -->
       <input type="hidden" name="dish_id" value="<%= @dish.id %>">
+      <!-- Label and input for user_id -->
+      <input type="hidden" name="user_id" value="<%= current_user.id %>">
+
 
       <!-- Label and input for venue_id -->
       <div class="form-group">
@@ -72,12 +76,11 @@
           Venue
         </label>
 
-        <%= select_tag(:venue_id, options_from_collection_for_select(Venue.all, :id, :name), :class => "form-control") %>
+        <%= select_tag(:venue_id, options_from_collection_for_select(Venue.all, :id, :name), 
+        {:prompt => 'Choose a venue...', :class => "form-control"},) %>
       </div>
 
-      <!-- Label and input for user_id -->
-      <input type="hidden" name="user_id" value="<%= current_user.id %>">
-
+     
 
       <button class="btn btn-block btn-success">
         Create Bookmark
