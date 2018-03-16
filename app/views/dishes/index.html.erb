@@ -13,11 +13,19 @@
     <%= f.label :name_cont, "Name contains" %>
     <%= f.text_field :name_cont, :class => "form-control", :placeholder => "Name contains" %>
   </div>
-
+  
 <div class="form-group">
-    <%= f.label :cuisine_name_cont, "Cuisine name contains" %>
-    <%= f.text_field :cuisine_name_cont, :class => "form-control", :placeholder => "Cuisine name contains" %>
-</div>
+    <label for="q_cuisine_id_eq_any">Cuisine</label>
+      <%= f.label :id_eq, "Cuisine" %>
+      <% @cuisines.each do |cuisine| %>
+        <div class="checkbox">
+          <label>
+             <%= check_box_tag('q[cuisine_id_eq_any][]', cuisine.id) %>
+              <%= cuisine.name %>
+          </label>
+        </div>
+      <% end %>
+    </div>
 
    <%= f.submit :class => "btn btn-primary btn-block mb-1" %>
       <a href="/dishes" class="btn btn-secondary btn-block mb-1">Clear filters</a>
